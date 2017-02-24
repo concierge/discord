@@ -1,0 +1,6 @@
+{
+  "Discord is ready": "Discord is ready",
+  "A token must be provided": "A token must be provided. You can set it with: /kpm config discord token <token>",
+  "Changing avatar...": "Changing avatar...",
+  "Changing username...": "Changing username...",
+}

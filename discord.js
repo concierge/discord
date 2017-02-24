@@ -3,7 +3,9 @@ let discord = require('discord.js'),
     callback = null,
     api = null,
     bot = null,
-    avatarB64 = null,
+    localAvatarB64 = null,
+    localAvatarBuffer = null,
+    userAvatarB64 = null,
 
     lookUpChannel = function(threadId) {
         let channel = null;
@@ -77,13 +79,13 @@ let discord = require('discord.js'),
     },
 
     sendTyping = function(threadId) {
-        let channel = lookUpChannel(threadId);
-        bot.startTyping(channel);
+        //let channel = lookUpChannel(threadId);
+        bot.channels.get(threadId).startTyping();
     },
 
     stopTyping = function(threadId) {
-        let channel = lookUpChannel(threadId);
-        bot.stopTyping(channel);
+        //let channel = lookUpChannel(threadId);
+        bot.channels.get(threadId).stopTyping();
     },
 
     addMentions = function (message) {
@@ -110,7 +112,8 @@ let discord = require('discord.js'),
 
     sendSingleMessage = function(message, threadId, channel, callback) {
         stopTyping(threadId);
-        bot.sendMessage(channel, message, callback);
+        //bot.sendMessage(channel, message, callback);
+        bot.channels.get(threadId).sendMessage(message).then(message => callback).catch(console.error);
     },
 
     sendMultipleMessages = function(messageList, threadId, channel) {
@@ -151,14 +154,25 @@ let discord = require('discord.js'),
             forceFetchUsers: true
         });
 
-        bot.loginWithToken(token);
-
         bot.on('ready', function() {
-            if (bot.avatar !== avatarB64) {
-                bot.setAvatar(avatarB64);
+            if (exports.config.avatarUrl && bot.user.avatarURL) {
+                request(bot.user.avatarURL,
+                    function(error, response, body) {
+                        if (!error && response.statusCode === 200) {
+                            userAvatarB64 = /*'data:' +
+                                response.headers['content-type'] +
+                                ';base64,' +*/
+                                new Buffer(body).toString('base64');
+                            if (userAvatarB64 != localAvatarB64) {
+                                console.debug($$`Changing avatar...`);
+                                bot.user.setAvatar(localAvatarBuffer);
+                            }
+                        }
+                    });
             }
-            if (exports.config.name) {
-                bot.setUsername(exports.config.name);
+            if (exports.config.name && bot.user.username != exports.config.name) {
+                console.debug($$`Changing username...`);
+                bot.user.setUsername(exports.config.name);
             }
             console.debug($$`Discord is ready`);
         });
@@ -168,6 +182,8 @@ let discord = require('discord.js'),
                 recMessage(message);
             }
         });
+        
+        bot.login(token);
     };
 
 exports.start = function(cb) {
@@ -195,9 +211,10 @@ exports.start = function(cb) {
         request(exports.config.avatarUrl,
             function(error, response, body) {
                 if (!error && response.statusCode === 200) {
-                    avatarB64 = 'data:' +
+                    localAvatarBuffer = new Buffer(body);
+                    localAvatarB64 = /*'data:' +
                         response.headers['content-type'] +
-                        ';base64,' +
+                        ';base64,' +*/
                         new Buffer(body).toString('base64');
                     initialiseBot(token);
                 }
