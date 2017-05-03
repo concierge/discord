@@ -2,5 +2,5 @@
   "Discord is ready": "Discord jest gotowy",
   "A token must be provided": "Token musi zostać podany. Możesz go ustawić używając polecenia: /kpm config discord token <token>",
   "Changing avatar...": "Zmienianie avatara...",
-  "Changing username...": "Zmienianie nazwy użytkownika...",
+  "Changing username...": "Zmienianie nazwy użytkownika..."
 }
