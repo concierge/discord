@@ -52,9 +52,12 @@ class DiscordIntegrationApi extends shim {
                 continue;
             }
             const user = this._bot.users.get(key);
-            user.name = user.username;
-            user.tag = `@${user.username}#${user.discriminator}`;
-            users[user.id] = user;
+            users[user.id] = {
+                name: user.username,
+                tag: `@${user.username}#${user.discriminator}`,
+                id: user.id,
+                _base: user
+            };
         }
         return users;
     }
