@@ -1,10 +1,10 @@
 {
   "name": "discord",
-  "version": 6.0,
+  "version": 6.1,
   "startup": "discord.js",
   "type": "integration",
   "config": [
-    [ "commandPrefix", "The default prefix for each command.", "!" ],
+    [ "commandPrefix", "The default prefix for each command.", "/" ],
     [ "name", "The name of the bot on Discord.", "" ],
     [ "token", "Discord API token.", "" ],
     [ "avatarUrl", "URL to the avatar on Discord.", "" ]

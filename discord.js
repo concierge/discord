@@ -76,7 +76,7 @@ class DiscordIntegrationApi extends shim {
     sendFile (type, file, description, threadId) {
         const channel = this._bot.channels.get(threadId);
         this._stopTyping(threadId);
-        this._bot.sendFile(channel, file, description);
+        fs.readFile(file, (err, buffer) => channel.sendFile(buffer, file, description));
     }
 
     setTitle (title, threadId) {
